@@ -69,12 +69,12 @@ app.post("/api/applications", async (request, reply) => {
 
   const { jobId, candidateId, recruiterId, coverLetter } = parsed.data;
 
-  const result = insertApplication.run({
+  const result = insertApplication.run(
     jobId,
     candidateId,
     recruiterId,
     coverLetter,
-  });
+  );
 
   const created = {
     id: result.lastInsertRowid,

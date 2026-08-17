@@ -2,11 +2,10 @@ import { Worker, Job } from "bullmq";
 import { connection } from "./redis";
 import { deadLetterQueue } from "./queues";
 
-function makeWorker(queueName: string, shouldFail = false) {
+function makeWorker(queueName: string) {
   const worker = new Worker(
     queueName,
     async (job: Job) => {
-      if (shouldFail) throw new Error("intentional test failure");
       console.log(
         `[${new Date().toISOString()}] [${queueName}] processing job ${job.id}`,
         job.data,
@@ -42,6 +41,6 @@ function makeWorker(queueName: string, shouldFail = false) {
   return worker;
 }
 
-export const notificationsWorker = makeWorker("notifications", true);
+export const notificationsWorker = makeWorker("notifications");
 export const statsUpdatesWorker = makeWorker("stats-updates");
 export const auditLogsWorker = makeWorker("audit-logs");

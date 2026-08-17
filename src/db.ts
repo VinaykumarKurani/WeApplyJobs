@@ -1,4 +1,4 @@
-import Database from "better-sqlite3";
+import { DatabaseSync } from "node:sqlite";
 import path from "path";
 import fs from "fs";
 
@@ -7,11 +7,9 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir);
 }
 
-export const db: Database.Database = new Database(
-  path.join(dataDir, "applications.db"),
-);
+export const db = new DatabaseSync(path.join(dataDir, "applications.db"));
 
-db.pragma("journal_mode = WAL");
+db.exec("PRAGMA journal_mode = WAL");
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS applications (
@@ -24,7 +22,7 @@ db.exec(`
   )
 `);
 
-export const insertApplication: Database.Statement = db.prepare(`
+export const insertApplication = db.prepare(`
   INSERT INTO applications (jobId, candidateId, recruiterId, coverLetter)
-  VALUES (@jobId, @candidateId, @recruiterId, @coverLetter)
+  VALUES (?, ?, ?, ?)
 `);
